@@ -22,7 +22,7 @@ var x = d3.scaleBand()
 var y = d3.scaleLinear()
 	.rangeRound([height, 0]);
 
-d3.tsv("../data/degree.tsv").then(function (data) {
+d3.tsv("/data/degree.tsv").then(function (data) {
 	x.domain(data.map(function (d) {
 			return d.Degree;
 		}));
