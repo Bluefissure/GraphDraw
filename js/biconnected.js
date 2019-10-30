@@ -110,7 +110,7 @@ var forceSimulation = d3.forceSimulation()
             .force("center",d3.forceCenter());
 
 forceSimulation.nodes(nodes)
-            .on("tick",ticked);
+            .on("tick", ticked);
 forceSimulation.force("link")
     		.links(edges)
     		.distance(function(d){
@@ -119,6 +119,8 @@ forceSimulation.force("link")
 forceSimulation.force("center")
     		.x(width*0.5)
             .y(height*0.5);
+
+var self_cycle = [];
 var links = g.append("g")
     		.selectAll("line")
     		.data(edges)
@@ -126,8 +128,23 @@ var links = g.append("g")
     		.append("line")
     		.attr("stroke",function(d,i){
     			return get_edge_color(d, i);
-    		})
+            })
             .attr("stroke-width",3);
+edges.forEach(function(edge){
+    var s = edge.source,
+        t = edge.target;
+    if(s != null && s == t){
+        console.log(s);
+        self_cycle.push([s, t]);
+    }
+});
+var selfLinks = g.append("g")
+    .selectAll("line")
+    .data(self_cycle)
+    .enter().append("path")
+    .attr("stroke", "green")
+    .attr("stroke-width", 3)
+    .attr("fill", "none");
 var linksText = g.append("g")
     		.selectAll("text")
     		.data(edges)
@@ -162,20 +179,63 @@ gs.append("text")
     		.text(function(d){
     			return d.id;
             })
+function self_cycle_path(s, t){
+    var x1 = s.x,
+        y1 = s.y,
+        x2 = t.x,
+        y2 = t.y,
+        dx = x2 - x1,
+        dy = y2 - y1,
+        dr = Math.sqrt(dx * dx + dy * dy),
+
+        // Defaults for normal edge.
+        drx = dr,
+        dry = dr,
+        xRotation = 0, // degrees
+        largeArc = 0, // 1 or 0
+        sweep = 1; // 1 or 0
+
+        // Self edge.
+        if ( x1 === x2 && y1 === y2 ) {
+            // Fiddle with this angle to get loop oriented.
+            xRotation = -45;
+
+            // Needs to be 1.
+            largeArc = 1;
+
+            // Change sweep to change orientation of loop. 
+            //sweep = 0;
+
+            // Make drx and dry different to get an ellipse
+            // instead of a circle.
+            drx = 10;
+            dry = 20;
+
+            // For whatever reason the arc collapses to a point if the beginning
+            // and ending points of the arc are the same, so kludge it.
+            x2 = x2 - 1;
+            y2 = y2 + 1;
+        } 
+
+    return "M" + x1 + "," + y1 + "A" + drx + "," + dry + " " + xRotation + "," + largeArc + "," + sweep + " " + x2 + "," + y2;
+
+}
 function ticked(){
     links
         .attr("x1",function(d){return d.source.x;})
         .attr("y1",function(d){return d.source.y;})
         .attr("x2",function(d){return d.target.x;})
         .attr("y2",function(d){return d.target.y;});
-        
+    selfLinks.attr("d", function(d){
+        return self_cycle_path(d[0], d[1]);
+    })
     linksText
         .attr("x",function(d){
-        return (d.source.x+d.target.x)/2;
-    })
-    .attr("y",function(d){
-        return (d.source.y+d.target.y)/2;
-    });
+            return (d.source.x+d.target.x)/2;
+        })
+        .attr("y",function(d){
+            return (d.source.y+d.target.y)/2;
+        });
         
     gs.attr("transform",function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 }
