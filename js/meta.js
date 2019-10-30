@@ -3,20 +3,12 @@
 
 import {nodes, edges} from "../data/meta_data.js";
 
-// Algorithm starts here.
 function get_vertex_color(d){
-    return colorScale(d.color);
+    return d.cut == 1? "red":colorScale(d.color);
 }
 function get_edge_color(e, i){
-    for(let i = 1; i <= bcc_num; i++){
-        if(bcc[i].includes(e.source) && bcc[i].includes(e.target)){
-            return colorScale(i);
-        }
-    }
     return "black";
 }
-// Algorithm ends here.
-
 let svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height"),
@@ -53,12 +45,11 @@ var links = g.append("g")
     		.attr("stroke",function(d,i){
     			return get_edge_color(d, i);
             })
-            .attr("stroke-width",3);
+            .attr("stroke-width",1);
 edges.forEach(function(edge){
     var s = edge.source,
         t = edge.target;
     if(s != null && s == t){
-        console.log(s);
         self_cycle.push([s, t]);
     }
 });
@@ -67,7 +58,7 @@ var selfLinks = g.append("g")
     .data(self_cycle)
     .enter().append("path")
     .attr("stroke", "black")
-    .attr("stroke-width", 3)
+    .attr("stroke-width", 1)
     .attr("fill", "none");
 var linksText = g.append("g")
     		.selectAll("text")
@@ -92,7 +83,9 @@ var gs = g.selectAll(".circleText")
     			.on("end",ended)
             );
 gs.append("circle")
-    		.attr("r",5)
+    		.attr("r",function(d){
+                return d.cut == 1? 5 : 10;
+            })
     		.attr("fill", function(d, i){
                 return get_vertex_color(d);
             })
