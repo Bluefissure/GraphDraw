@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh-Hans" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>GraphDraw</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.0/showdown.min.js" integrity="sha256-LSUpTY0kkXGKvcBC9kbmgibmx3NVVgJvAEfTZbs51mU=" crossorigin="anonymous"></script>
+    <script src="js/d3.v5.min.js"></script>
+    <script src="js/jquery-3.4.0.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script type="module" src="data/data.js"></script>
+    <script type="module" src="js/degree.js"></script>
+    
+    <script src="js/custom.js"></script>
+    <link rel="stylesheet" href="css/multilingual.css">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-138420636-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'UA-138420636-1');
+    </script>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <style>
+        .bar {
+            fill: steelblue;
+        }
+        .bar:hover {
+            fill: brown;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <a class="navbar-brand en" href="/">Graph Draw</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Expand">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+                <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link en" href="index.html">Graph</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link en" href="degree.html">Degree</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link en" href="biconnected.html">Biconnected</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link en" href="meta.html">Metagraph</a>
+                        </li>
+                    </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="switchLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Language
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="?lang=en">English</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div style="margin:auto;width:100%;">
+        <div id="editor-wrapper" class="">
+            <center><svg width="1280" height="500"></svg></center>
+        </div>
+    </div>
+    <div class="container" style="margin:auto;">
+        <hr />
+        <div class="row col-12 tutorial">
+            <div class="col-12 text-left en">
+                <p>Avg Degree: </p>
+                <p>132/43 ~= 3.0697674418604652</p>
+            </div>
+        </div>
+        <div class="col-12 alert alert-success mt-1 cn" role="alert">
+            19/10/29 Initial Update</a>
+        </div>
+    </div>
+
+    <hr />
+    <div class="row col-12 page-footer">
+        <div class="col-12 text-center en">
+            <p>Last update: 19/10/29, <a href="https://github.com/Bluefissure">Contact</a></p>
+            <p>
+                Page template source:
+                <a href="https://github.com/graueneko/graueneko.github.io">Arknights Toolbox</a>
+            </p>
+            <p>Powered by Lu Jin, Yaocheng Tong, Yupeng Zhang.</p>
+        </div>
+    </div>
+    <script type="text/javascript" >
+        $(function () {
+            let lang = getLang();
+            let initialized = false;
+            showCurrentLang();
+            document.title = {
+                "en": "GraphDraw"
+            }[lang];
+        });
+        function source2md(text){
+            var converter = new showdown.Converter({tables: true});
+            var mdhtml = converter.makeHtml(text);
+            return mdhtml;
+        }
+        function convert(){
+            var text = document.getElementById("oritextarea").value;
+            document.getElementById("preview").innerHTML = source2md(text);
+            document.getElementById("ngatextarea").value = md2nga(text);
+        }
+    </script>
+</body>
+</html>
