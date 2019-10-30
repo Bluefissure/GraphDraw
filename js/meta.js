@@ -1,103 +1,11 @@
 'use strict';
 
 
-import {nodes, edges} from "../data/data.js";
+import {nodes, edges} from "../data/meta_data.js";
 
 // Algorithm starts here.
-var num = 0;
-var G = {};
-var root_son = 0;
-var bcc_num = 0;
-var bcc = {};
-var stack = [];
-dfs();
-function dfs(){
-    for(var u in nodes){
-        nodes[u].vis = 0;
-        nodes[u].cut = 0;
-        nodes[u].dfn = -1;
-        nodes[u].low = -1;
-        nodes[u].father = -1;
-    }
-    for(var e in edges){
-        var edge = edges[e];
-        let u = edge.source, v = edge.target;
-        if(G[u] == null) G[u] = []
-        if(G[v] == null) G[v] = []
-        G[u].push(v);
-        G[v].push(u);
-    }
-    let s = nodes[0]
-    tarjan(s, null);
-    for(var i in nodes){
-        if(i == 0) continue;
-        let u = nodes[i];
-        let v = u.father;
-        if (v == s) root_son += 1;
-        // else{
-        //     if (u.low >= v.dfn){    // cut vertex
-        //         v.cut = 1;
-        //     }
-        // }
-    }
-    if(root_son > 1) s.cut = 1;
-    for(var i in nodes){
-        let u = nodes[i];
-        let v = u.father;
-        if (v != null && u.low > v.dfn){
-            for(var j in edges){
-                let e = edges[j];
-                if ((e.source == u.id && e.target == v.id) ||
-                    ((e.source == v.id && e.target == u.id))){  // cut edge
-                        e.cut = 1;
-                    }
-            }
-        }
-    }
-    // console.log(edges2);
-    // console.log(nodes);
-}
-
-function get_node_by_id(id){
-    for(let i in nodes){
-        if(nodes[i].id == id){
-            return nodes[i];
-        }
-    }
-    return null;
-}
-
-function tarjan(u, fa){
-    // console.log(u.id);
-    u.father = fa;
-    u.vis = 1;
-    num += 1;
-    u.dfn = num;
-    u.low = num;
-    for(let i in G[u.id]){
-        let v = get_node_by_id(G[u.id][i]);
-        if(v.vis == 0){
-            stack.push(v);
-            tarjan(v, u);
-            u.low = Math.min(u.low, v.low);
-            if(v.low >= u.dfn){ // cut vertex
-                u.cut = 1;
-                bcc_num += 1;
-                if (bcc[bcc_num] == null) bcc[bcc_num] = [];
-                while(stack[stack.length-1] != v){
-                    bcc[bcc_num].push(stack.pop());
-                }
-                bcc[bcc_num].push(stack.pop());
-                bcc[bcc_num].push(u);
-            }
-        }
-        else if(fa != null && fa.id != v.id){
-            u.low = Math.min(u.low, v.dfn);
-        }
-    }
-}
 function get_vertex_color(d){
-    return d.cut == 1? "red":"black";
+    return colorScale(d.color);
 }
 function get_edge_color(e, i){
     for(let i = 1; i <= bcc_num; i++){
@@ -108,7 +16,7 @@ function get_edge_color(e, i){
     return "black";
 }
 // Algorithm ends here.
-console.log(bcc);
+
 let svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height"),
@@ -150,6 +58,7 @@ edges.forEach(function(edge){
     var s = edge.source,
         t = edge.target;
     if(s != null && s == t){
+        console.log(s);
         self_cycle.push([s, t]);
     }
 });
