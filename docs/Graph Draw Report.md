@@ -10,10 +10,8 @@ You can view this project in a [interative web page](https://blog.bluefissure.co
 
 ![](imgs/graph.png)
 
-<div style="page-break-after: always;"></div>
 ![](imgs/degree.png)
 
-<div style="page-break-after: always;"></div>
 ![](imgs/bcc.png)
-<div style="page-break-after: always;"></div>
+
 ![](imgs/meta_.png)
