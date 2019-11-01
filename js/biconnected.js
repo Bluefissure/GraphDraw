@@ -99,10 +99,10 @@ function tarjan(u, fa){
 function get_vertex_color(d){
     return d.cut == 1? "red":"black";
 }
-function get_edge_color(e, i){
+function get_edge_color(e){
     for(let i = 1; i <= bcc_num; i++){
         if(bcc[i].includes(e.source) && bcc[i].includes(e.target)){
-            return colorScale(i);
+            return colorScale(Number(i));
         }
     }
     return "black";
@@ -119,7 +119,9 @@ let g = svg.append("g")
 
 var colorScale = d3.scaleOrdinal()
             .range(d3.schemePaired);
-            
+for (let i = 1; i <= 12; i++){
+    colorScale(i);
+}
 var forceSimulation = d3.forceSimulation()
     		.force("link",d3.forceLink().id(function(d) { return d.id;}))
     		.force("charge",d3.forceManyBody())

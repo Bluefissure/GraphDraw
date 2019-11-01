@@ -4,7 +4,7 @@
 import {nodes, edges} from "../data/meta_data.js";
 
 function get_vertex_color(d){
-    return d.cut == 1? "red":colorScale(d.color);
+    return d.cut == 1? "red":colorScale(Number(d.color));
 }
 function get_edge_color(e, i){
     return "black";
@@ -19,6 +19,9 @@ let g = svg.append("g")
 
 var colorScale = d3.scaleOrdinal()
             .range(d3.schemePaired);
+for (let i = 1; i <= 12; i++){
+    colorScale(i);
+}
             
 var forceSimulation = d3.forceSimulation()
     		.force("link",d3.forceLink().id(function(d) { return d.id;}))
